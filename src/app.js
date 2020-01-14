@@ -1,11 +1,15 @@
+import {Question} from './question.js'
 import {isValid} from './utils.js';
 import './styles.css';
 
 const form = document.getElementById('form');
 const input = form.querySelector('#question-input');
-const dubmitBtn = form.querySelector('#submit');
+const submitBtn = form.querySelector('#submit');
 
 form.addEventListener('submit', submitFormHandler);
+input.addEventListener('input', () => {
+  submitBtn.disabled = !isValid(input.value);
+});
 
 function submitFormHandler(event) {
   event.preventDefault();
@@ -15,8 +19,11 @@ function submitFormHandler(event) {
       date: new Date().toJSON()
     }
 
-    // Async request to server to save question
-
-    
+    submitBtn.disabled = true;
+    Question.create(question).then(() => {
+      input.value = '';
+      input.className = '';
+      submitBtn.disabled = false;
+    });  
   }
 }
